@@ -1,0 +1,39 @@
+{
+   "action": {
+      "default_icon": "assets/icon/Eva-Wall-E-128.png",
+      "default_popup": "popup.html",
+      "default_title": "Speak Subtitles for YouTube"
+   },
+   "author": "Aulon",
+   "background": {
+      "service_worker": "sw.bundle.js"
+   },
+   "content_scripts": [ {
+      "js": [ "content.bundle.js", "webpage.bundle.js", "ga.bundle.js" ],
+      "matches": [ "https://www.youtube.com/*" ],
+      "run_at": "document_idle",
+      "world": "MAIN"
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_extension_description__",
+   "externally_connectable": {
+      "matches": [ "https://www.youtube.com/*" ]
+   },
+   "host_permissions": [ "https://www.youtube.com/*" ],
+   "icons": {
+      "128": "assets/icon/Eva-Wall-E-128.png",
+      "512": "assets/icon/Eva-Wall-E-512.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmcahqAXQWJySVyXAcJSF03YYBPGJIngaZtB8E3VRrJwYvS4SxTgqh58fcArtjW0RkDiUPFzGJDqmzWBulrezMyTHEVw7LgMTCkNg7PNf3niXjZIOc0NPRElZ8v3JF6HZuS/wNgNJQjzU2ZqYauaN9Xm2kbDCW50Ie6mcxna81Z5JAtLzVaFuUkwc51/mAalU42s5q5MlZ1pC7qwEQq4PkKItFfkEPoNNx+m3huKce6r2rNimxgCT9OMoLI8jYuDPKdD2n9DtRv1xLutfNiYSfZJOzoplpA9W1jFSR+MOfzd4tpmmHkAZwf84RqGGRk2e9Qc15ak3dBTmJgfI7oiR9QIDAQAB",
+   "manifest_version": 3,
+   "minimum_chrome_version": "88.0",
+   "name": "__MSG_extension_name__",
+   "options_page": "don.html",
+   "options_ui": {
+      "open_in_tab": true,
+      "page": "don.html"
+   },
+   "permissions": [ "storage" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.1.41"
+}
