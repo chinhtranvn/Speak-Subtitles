@@ -28,11 +28,11 @@ chrome.runtime.onMessage.addListener(msg => {
   }
 });
 
-(async () => {
-  const cfg = await fetchConfig();
+
+fetchConfig().then(cfg => {
   enabled = cfg.enabled;
   if (enabled) init();
-})();
+});
 
 async function init() {
   const cfg = await fetchConfig();
