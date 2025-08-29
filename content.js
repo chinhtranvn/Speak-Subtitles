@@ -1,4 +1,9 @@
-import { getConfig } from "./storage.js";
+const storage = import(chrome.runtime.getURL("storage.js"));
+
+async function fetchConfig() {
+  const { getConfig } = await storage;
+  return getConfig();
+}
 
 let queue = [];
 let playing = false;
@@ -23,8 +28,14 @@ chrome.runtime.onMessage.addListener(msg => {
   }
 });
 
+(async () => {
+  const cfg = await fetchConfig();
+  enabled = cfg.enabled;
+  if (enabled) init();
+})();
+
 async function init() {
-  const cfg = await getConfig();
+  const cfg = await fetchConfig();
   if (!cfg.enabled || !enabled) return;
 
   const subs = await fetchSubtitles();
@@ -45,7 +56,7 @@ async function playNext() {
   }
   playing = true;
 
-  const cfg = await getConfig();
+  const cfg = await fetchConfig();
   const sub = queue.shift();
   let text = sub.text;
 
