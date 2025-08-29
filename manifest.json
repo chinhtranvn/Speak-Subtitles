@@ -4,10 +4,7 @@
   "description": "Read YouTube subtitles with Google Cloud Text-to-Speech",
   "version": "1.0.0",
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "128": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siPjxwYXRoIGQ9Ik0xNi41IDEyYzAtMS43Ny0xLTMuMjktMi41LTQuMDN2Mi41MmwyLjUgMi41YzAtLjI4LjA0LS41NS4wNC0uODN6TTMgOXY2aDRsNSA1VjRsLTUgNUgzem0xMy41IDNjMCAuMjgtLjA0LjU1LS4wNC44M2wyLjI4IDIuMjhDMjAuMjYgMTQuNTggMjEgMTMuMzUgMjEgMTJzLS43NC0yLjU4LTEuOTYtMy4xMWwtMS42NiAxLjY2Yy42LjcyLjk2IDEuNjMuOTYgMi42NXptLTYuMDctNi4wN3YyLjA2Yy44OS4zOSAxLjY1IDEuMDggMi4xNCAxLjkzbDEuNDYtMS40NmMtLjY2LTEuNDctMS45LTIuNjEtMy4zOS0zLjEzeiIvPjwvc3ZnPg=="
-    }
+    "default_popup": "popup.html"
   },
   "permissions": ["storage", "scripting", "activeTab"],
   "background": {
@@ -20,8 +17,5 @@
       "js": ["content.js"],
       "run_at": "document_idle"
     }
-  ],
-  "icons": {
-    "128": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iYmxhY2siPjxwYXRoIGQ9Ik0xNi41IDEyYzAtMS43Ny0xLTMuMjktMi41LTQuMDN2Mi41MmwyLjUgMi41YzAtLjI4LjA0LS41NS4wNC0uODN6TTMgOXY2aDRsNSA1VjRsLTUgNUgzem0xMy41IDNjMCAuMjgtLjA0LjU1LS4wNC44M2wyLjI4IDIuMjhDMjAuMjYgMTQuNTggMjEgMTMuMzUgMjEgMTJzLS43NC0yLjU4LTEuOTYtMy4xMWwtMS42NiAxLjY2Yy42LjcyLjk2IDEuNjMuOTYgMi42NXptLTYuMDctNi4wN3YyLjA2Yy44OS4zOSAxLjY1IDEuMDggMi4xNCAxLjkzbDEuNDYtMS40NmMtLjY2LTEuNDctMS45LTIuNjEtMy4zOS0zLjEzeiIvPjwvc3ZnPg=="
-  }
+  ]
 }
