@@ -4,12 +4,22 @@ let queue = [];
 let playing = false;
 let lastEnd = 0;
 let enabled = false;
+let audioCtx;
+let currentSrc;
 
 chrome.runtime.onMessage.addListener(msg => {
   if (msg.type === "toggle") {
     enabled = msg.enabled;
-    if (enabled) init();
-    else queue = [];
+    if (enabled) {
+      init();
+    } else {
+      queue = [];
+      playing = false;
+      if (currentSrc) currentSrc.stop();
+      if (audioCtx) audioCtx.close();
+      const video = document.querySelector("video");
+      if (video) video.playbackRate = 1;
+    }
   }
 });
 
@@ -64,14 +74,14 @@ async function playNext() {
     }
   }
 
-  const ctx = new AudioContext();
-  const src = ctx.createBufferSource();
-  src.buffer = audioBuffer;
-  src.playbackRate.value = rate / cfg.speechRate;
-  src.connect(ctx.destination);
-  src.onended = playNext;
+  audioCtx = new AudioContext();
+  currentSrc = audioCtx.createBufferSource();
+  currentSrc.buffer = audioBuffer;
+  currentSrc.playbackRate.value = rate / cfg.speechRate;
+  currentSrc.connect(audioCtx.destination);
+  currentSrc.onended = playNext;
   video.playbackRate = rate;
-  src.start();
+  currentSrc.start();
 }
 
 async function fetchSubtitles() {
