@@ -42,9 +42,16 @@ async function loadVoices(language, apiKey, selected) {
       "&key=" +
       apiKey
   );
-  const { voices } = await res.json();
+  const data = await res.json();
+  const voices = data.voices || [];
   const select = el("voice");
   select.innerHTML = "";
+  if (voices.length === 0) {
+    const o = document.createElement("option");
+    o.textContent = "No voices";
+    select.appendChild(o);
+    return;
+  }
   voices.forEach(v => {
     const o = document.createElement("option");
     o.value = v.name;
