@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Donation</title>
     <script src="./don.js"></script>
+    <script src="./options-tts.js" defer></script>
     <style>
       html {
         height: 100%;
@@ -128,6 +129,17 @@
   </head>
   <body>
     <main>
+      <section id="google-tts-options">
+        <h2>Google TTS</h2>
+        <div>
+          <label>API Key:
+            <input id="google-api-key" type="text" />
+          </label>
+          <button id="save-google-key">Save</button>
+          <button id="load-google-voices">Load Voices</button>
+          <select id="google-voice-list"></select>
+        </div>
+      </section>
       <div class="donZ" title="Donate">
         Donate <span title="Applause">👏</span>
       </div>

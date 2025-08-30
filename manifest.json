@@ -5,21 +5,20 @@
       "default_title": "Speak Subtitles for YouTube"
    },
    "author": "Aulon",
-   "background": {
-      "service_worker": "sw.bundle.js"
-   },
-   "content_scripts": [ {
-      "js": [ "content.bundle.js", "webpage.bundle.js", "ga.bundle.js" ],
-      "matches": [ "https://www.youtube.com/*" ],
-      "run_at": "document_idle",
-      "world": "MAIN"
-   } ],
+    "background": {
+       "service_worker": "sw.js"
+    },
+    "content_scripts": [ {
+       "js": [ "content.bundle.js", "googleTtsShim.js", "webpage.bundle.js", "ga.bundle.js" ],
+       "matches": [ "https://www.youtube.com/*" ],
+       "run_at": "document_idle"
+    } ],
    "default_locale": "en",
    "description": "__MSG_extension_description__",
    "externally_connectable": {
       "matches": [ "https://www.youtube.com/*" ]
    },
-   "host_permissions": [ "https://www.youtube.com/*" ],
+    "host_permissions": [ "https://www.youtube.com/*", "https://texttospeech.googleapis.com/*" ],
    "icons": {
       "128": "assets/icon/Eva-Wall-E-128.png",
       "512": "assets/icon/Eva-Wall-E-512.png"
