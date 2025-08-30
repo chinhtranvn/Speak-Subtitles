@@ -23,7 +23,7 @@ async function fetchVoices() {
   const data = await resp.json();
   const voices = data.voices || [];
   // Store voices for popup usage
-  await new Promise((resolve) => chrome.storage.sync.set({ googleVoices: voices }, resolve));
+  await new Promise((resolve) => chrome.storage.local.set({ googleVoices: voices }, resolve));
   return voices;
 }
 

@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadBtn = document.getElementById('load-google-voices');
   const voiceList = document.getElementById('google-voice-list');
 
-  chrome.storage.sync.get(['googleApiKey', 'googleVoices'], (res) => {
+  chrome.storage.sync.get(['googleApiKey'], (res) => {
     if (res.googleApiKey) keyInput.value = res.googleApiKey;
+  });
+  chrome.storage.local.get(['googleVoices'], (res) => {
     if (Array.isArray(res.googleVoices)) populateVoices(res.googleVoices);
   });
 

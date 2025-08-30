@@ -7,7 +7,7 @@
   let voices = [];
 
   function loadVoices() {
-    chrome.storage.sync.get(['googleVoices'], (res) => {
+    chrome.storage.local.get(['googleVoices'], (res) => {
       const list = res.googleVoices || [];
       voices = list.map((v, i) => ({
         voiceURI: v.name,
@@ -108,7 +108,7 @@
   };
 
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync' && changes.googleVoices) {
+    if (area === 'local' && changes.googleVoices) {
       loadVoices();
     }
   });
