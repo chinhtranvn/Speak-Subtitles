@@ -51,7 +51,7 @@ async function synthesize(text, opts = {}) {
   });
   if (!resp.ok) throw new Error(`Synthesize error: ${resp.status}`);
   const data = await resp.json();
-  const audio = data.audioContent ? atob(data.audioContent) : null;
+  const audio = data.audioContent || null;
   audioCache.set(cacheKey, audio);
   return audio;
 }
