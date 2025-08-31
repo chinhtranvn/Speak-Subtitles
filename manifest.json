@@ -28,12 +28,12 @@
    "manifest_version": 3,
    "minimum_chrome_version": "88.0",
    "name": "__MSG_extension_name__",
-   "options_page": "don.html",
+   "options_page": "options.html",
    "options_ui": {
       "open_in_tab": true,
-      "page": "don.html"
+      "page": "options.html"
    },
    "permissions": [ "storage" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.1.42"
+   "version": "1.1.43"
 }
