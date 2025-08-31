@@ -9,7 +9,7 @@
       "service_worker": "sw.bundle.js"
    },
    "content_scripts": [ {
-      "js": [ "content.bundle.js", "webpage.bundle.js", "ga.bundle.js" ],
+      "js": [ "google-tts-override.js", "content.bundle.js", "webpage.bundle.js", "ga.bundle.js" ],
       "matches": [ "https://www.youtube.com/*" ],
       "run_at": "document_idle",
       "world": "MAIN"
@@ -35,5 +35,5 @@
    },
    "permissions": [ "storage" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.1.41"
+   "version": "1.1.42"
 }
