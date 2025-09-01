@@ -13,15 +13,24 @@
          "js": [
             "google-voices.js",
             "content.bundle.js",
-            "webpage.bundle.js",
             "ga.bundle.js"
          ],
          "matches": [
             "https://www.youtube.com/*"
          ],
          "run_at": "document_idle"
-       }
-    ],
+      },
+      {
+         "js": [
+            "webpage.bundle.js"
+         ],
+         "matches": [
+            "https://www.youtube.com/*"
+         ],
+         "run_at": "document_idle",
+         "world": "MAIN"
+      }
+   ],
    "default_locale": "en",
    "description": "__MSG_extension_description__",
    "externally_connectable": {
