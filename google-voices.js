@@ -3,28 +3,51 @@
   const GOOGLE_VOICE_URI_PREFIX = "google-voice:";
 
   const customVoices = [
-    {voiceURI: GOOGLE_VOICE_URI_PREFIX + "en-US-Wavenet-D", name: "Google Wavenet D (en-US)", lang: "en-US"},
-    {voiceURI: GOOGLE_VOICE_URI_PREFIX + "vi-VN-Wavenet-A", name: "Google Wavenet A (vi-VN)", lang: "vi-VN"}
+    {voiceURI: GOOGLE_VOICE_URI_PREFIX + "en-US-Wavenet-D", name: "Google Wavenet D (en-US)", lang: "en-US", localService: false, default: false},
+    {voiceURI: GOOGLE_VOICE_URI_PREFIX + "vi-VN-Wavenet-A", name: "Google Wavenet A (vi-VN)", lang: "vi-VN", localService: false, default: false}
   ];
 
-  const originalGetVoices = window.speechSynthesis.getVoices.bind(window.speechSynthesis);
-  window.speechSynthesis.getVoices = function(){
+  const synth = window.speechSynthesis;
+
+  const originalGetVoices = synth.getVoices.bind(synth);
+  synth.getVoices = function(){
     return originalGetVoices().concat(customVoices);
   };
 
-  // Notify any listeners that the available voices list changed so the
-  // injected Google voices show up in selection dropdowns.
   try {
-    window.speechSynthesis.dispatchEvent(new Event("voiceschanged"));
-    if (typeof window.speechSynthesis.onvoiceschanged === "function") {
-      window.speechSynthesis.onvoiceschanged();
+    synth.dispatchEvent(new Event("voiceschanged"));
+    if (typeof synth.onvoiceschanged === "function") {
+      synth.onvoiceschanged();
     }
   } catch (e) {
     console.warn("Unable to dispatch voiceschanged event", e);
   }
 
-  const originalSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
-  window.speechSynthesis.speak = function(utterance){
+  const originalSpeak = synth.speak.bind(synth);
+  const originalCancel = synth.cancel.bind(synth);
+  const originalPause = synth.pause.bind(synth);
+  const originalResume = synth.resume.bind(synth);
+  const proto = Object.getPrototypeOf(synth) || SpeechSynthesis.prototype;
+  const speakingDesc = Object.getOwnPropertyDescriptor(proto, "speaking");
+  const pausedDesc = Object.getOwnPropertyDescriptor(proto, "paused");
+
+  let currentAudio = null;
+  let currentUtterance = null;
+  let googleSpeaking = false;
+
+  Object.defineProperty(synth, "speaking", {
+    get(){
+      return googleSpeaking || (speakingDesc && speakingDesc.get.call(synth));
+    }
+  });
+
+  Object.defineProperty(synth, "paused", {
+    get(){
+      return (currentAudio ? currentAudio.paused : false) || (pausedDesc && pausedDesc.get.call(synth));
+    }
+  });
+
+  synth.speak = function(utterance){
     const voice = utterance.voice;
     if(voice && voice.voiceURI && voice.voiceURI.startsWith(GOOGLE_VOICE_URI_PREFIX)){
       if(!API_KEY){
@@ -47,34 +70,84 @@
       .then(j => {
         if(j.audioContent){
           const audio = new Audio(`data:audio/mpeg;base64,${j.audioContent}`);
+          currentAudio = audio;
+          currentUtterance = utterance;
           if (typeof utterance.onstart === "function") {
             utterance.onstart();
           }
-          audio.addEventListener('ended', () => {
+          audio.addEventListener("ended", () => {
+            googleSpeaking = false;
+            currentAudio = null;
             if (typeof utterance.onend === "function") {
               utterance.onend();
             }
           });
-          audio.addEventListener('error', (e) => {
-            console.error('Audio playback failed', e);
+          audio.addEventListener("error", (e) => {
+            googleSpeaking = false;
+            console.error("Audio playback failed", e);
             if (typeof utterance.onerror === "function") {
               utterance.onerror(e);
             }
           });
-          audio.play().catch(err => {
-            console.error('Audio play promise rejected', err);
+          audio.play().then(() => {
+            googleSpeaking = true;
+          }).catch(err => {
+            googleSpeaking = false;
+            console.error("Audio play promise rejected", err);
           });
         } else {
-          console.error('No audioContent in TTS response', j);
+          console.error("No audioContent in TTS response", j);
           originalSpeak(utterance);
         }
       })
       .catch(err => {
-        console.error('Google TTS request failed', err);
+        console.error("Google TTS request failed", err);
         originalSpeak(utterance);
       });
     } else {
       originalSpeak(utterance);
     }
   };
+
+  synth.cancel = function(){
+    if(currentAudio){
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      googleSpeaking = false;
+      if(currentUtterance && typeof currentUtterance.onend === "function"){
+        currentUtterance.onend();
+      }
+      currentAudio = null;
+      currentUtterance = null;
+    }
+    originalCancel();
+  };
+
+  synth.pause = function(){
+    if(currentAudio && !currentAudio.paused){
+      currentAudio.pause();
+      googleSpeaking = false;
+      if(currentUtterance && typeof currentUtterance.onpause === "function"){
+        currentUtterance.onpause();
+      }
+    } else {
+      originalPause();
+    }
+  };
+
+  synth.resume = function(){
+    if(currentAudio && currentAudio.paused){
+      currentAudio.play().then(() => {
+        googleSpeaking = true;
+        if(currentUtterance && typeof currentUtterance.onresume === "function"){
+          currentUtterance.onresume();
+        }
+      }).catch(err => {
+        console.error("Resume play failed", err);
+      });
+    } else {
+      originalResume();
+    }
+  };
 })();
+
