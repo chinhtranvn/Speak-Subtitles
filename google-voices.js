@@ -12,6 +12,17 @@
     return originalGetVoices().concat(customVoices);
   };
 
+  // Notify any listeners that the available voices list changed so the
+  // injected Google voices show up in selection dropdowns.
+  try {
+    window.speechSynthesis.dispatchEvent(new Event("voiceschanged"));
+    if (typeof window.speechSynthesis.onvoiceschanged === "function") {
+      window.speechSynthesis.onvoiceschanged();
+    }
+  } catch (e) {
+    console.warn("Unable to dispatch voiceschanged event", e);
+  }
+
   const originalSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
   window.speechSynthesis.speak = function(utterance){
     const voice = utterance.voice;
