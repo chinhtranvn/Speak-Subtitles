@@ -19,10 +19,9 @@
          "matches": [
             "https://www.youtube.com/*"
          ],
-         "run_at": "document_idle",
-         "world": "MAIN"
-      }
-   ],
+         "run_at": "document_idle"
+       }
+    ],
    "default_locale": "en",
    "description": "__MSG_extension_description__",
    "externally_connectable": {

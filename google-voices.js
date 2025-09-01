@@ -29,6 +29,7 @@
     if(voice && voice.voiceURI && voice.voiceURI.startsWith(GOOGLE_VOICE_URI_PREFIX)){
       if(!API_KEY){
         console.warn("Google TTS API key is not set.");
+        originalSpeak(utterance);
         return;
       }
       const voiceName = voice.voiceURI.substring(GOOGLE_VOICE_URI_PREFIX.length);
@@ -41,11 +42,36 @@
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
-      }).then(r => r.json()).then(j => {
+      })
+      .then(r => r.json())
+      .then(j => {
         if(j.audioContent){
-          const audio = new Audio(`data:audio/mp3;base64,${j.audioContent}`);
-          audio.play();
+          const audio = new Audio(`data:audio/mpeg;base64,${j.audioContent}`);
+          if (typeof utterance.onstart === "function") {
+            utterance.onstart();
+          }
+          audio.addEventListener('ended', () => {
+            if (typeof utterance.onend === "function") {
+              utterance.onend();
+            }
+          });
+          audio.addEventListener('error', (e) => {
+            console.error('Audio playback failed', e);
+            if (typeof utterance.onerror === "function") {
+              utterance.onerror(e);
+            }
+          });
+          audio.play().catch(err => {
+            console.error('Audio play promise rejected', err);
+          });
+        } else {
+          console.error('No audioContent in TTS response', j);
+          originalSpeak(utterance);
         }
+      })
+      .catch(err => {
+        console.error('Google TTS request failed', err);
+        originalSpeak(utterance);
       });
     } else {
       originalSpeak(utterance);
